@@ -15,6 +15,16 @@ use App\Http\Controllers\RegistrationController;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+use App\Services\BinanceService;
+
+Route::get('/wallet', function (App\Services\BinanceService $binance) {
+    $data = $binance->getBalances();
+    $nonZero = collect($data['balances'])
+        ->filter(fn($asset) => floatval($asset['free']) > 0 || floatval($asset['locked']) > 0)
+        ->values(); // Reset keys
+    return response()->json($nonZero);
+});
+
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
