@@ -35,7 +35,8 @@ public function sweepUserFunds(Request $request)
 {
     try {
         $user = auth()->user();
-        
+       
+
 
         if (!$user || !$user->encrypted_private_key) {
             return response()->json([
@@ -68,9 +69,18 @@ public function sweepUserFunds(Request $request)
             'to' => $recipient,
             'amount' => (string)$amount,
         ]);
+        $userthatreceives = User::where('deposit_address', $recipient)->first();
+
+
+
 
         if ($response->successful()) {
             $data = $response->json();
+            if ($userthatreceives) {
+                $userthatreceives->balance += $amount;
+                $userthatreceives->save();
+            }
+
             return response()->json([
                 'success' => true,
                 'txHash' => $data['txHash'],

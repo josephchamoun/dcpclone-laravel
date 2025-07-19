@@ -7,6 +7,8 @@ use App\Http\Controllers\RegistrationController;
 use App\Services\BinanceService;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\BalanceController;
+use App\Http\Middleware\IsAdmin;
+use App\Http\Controllers\UserController;
 
 //hayde betjib l balance bi binance 
 Route::get('/wallet', function (App\Services\BinanceService $binance) {
@@ -37,23 +39,8 @@ Route::post('/register', [App\Http\Controllers\RegistrationController::class, 'r
 
 
 
-
-Route::middleware('auth:sanctum')->get('/debug/private-key', function () {
-    $user = auth()->user();
-
-    if (!$user || !$user->encrypted_private_key) {
-        return response()->json(['error' => 'No wallet found for user'], 404);
-    }
-
-    try {
-        $privateKey = decrypt($user->encrypted_private_key);
-        return response()->json([
-            'address' => $user->deposit_address,
-            'privateKey' => $privateKey
-        ]);
-    } catch (Exception $e) {
-        return response()->json(['error' => 'Failed to decrypt private key'], 500);
-    }
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+    Route::get('/users', [UserController::class, 'getallusers']);
 });
 
 
