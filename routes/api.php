@@ -6,6 +6,7 @@ use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegistrationController;
 use App\Services\BinanceService;
 use App\Http\Controllers\WalletController;
+use App\Http\Controllers\BalanceController;
 
 //hayde betjib l balance bi binance 
 Route::get('/wallet', function (App\Services\BinanceService $binance) {
@@ -21,8 +22,9 @@ Route::middleware('auth:sanctum')->post('/wallet/generate', [WalletController::c
 Route::middleware('auth:sanctum')->post('/wallet/sweep', [WalletController::class, 'sweepUserFunds']);
 Route::middleware('auth:sanctum')->get('/wallet/balance', [WalletController::class, 'getUserWalletBalance']);
 
-
-
+//balance
+Route::middleware('auth:sanctum')->get('/balance', [BalanceController::class, 'showBalance']);
+Route::middleware('auth:sanctum')->put('/balance/add-money', [BalanceController::class, 'addMoneyToBalance']);
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();

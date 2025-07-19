@@ -35,6 +35,7 @@ public function sweepUserFunds(Request $request)
 {
     try {
         $user = auth()->user();
+        
 
         if (!$user || !$user->encrypted_private_key) {
             return response()->json([
