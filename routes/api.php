@@ -31,6 +31,9 @@ Route::middleware('auth:sanctum')->put('/balance/add-money', [BalanceController:
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::middleware('auth:sanctum')->get('/levels', [
+    App\Http\Controllers\LevelController::class, 'index'
+]);
 
 Route::post('/login', [App\Http\Controllers\LoginController::class, 'login'])
     ->name('login');
