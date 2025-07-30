@@ -9,6 +9,7 @@ use App\Http\Controllers\WalletController;
 use App\Http\Controllers\BalanceController;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\LevelController;
 
 //hayde betjib l balance bi binance 
 Route::get('/wallet', function (App\Services\BinanceService $binance) {
@@ -28,9 +29,7 @@ Route::middleware('auth:sanctum')->get('/wallet/balance', [WalletController::cla
 Route::middleware('auth:sanctum')->get('/balance', [BalanceController::class, 'showBalance']);
 Route::middleware('auth:sanctum')->put('/balance/add-money', [BalanceController::class, 'addMoneyToBalance']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+
 Route::middleware('auth:sanctum')->get('/levels', [
     App\Http\Controllers\LevelController::class, 'index'
 ]);
@@ -45,6 +44,24 @@ Route::post('/register', [App\Http\Controllers\RegistrationController::class, 'r
 Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/users', [UserController::class, 'getallusers']);
 });
+
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return response()->json([
+        'username' => $request->user()->name,
+        'level' => $request->user()->level_id,       // or any user attribute
+        'isAdmin' => $request->user()->is_admin === 1,
+    ]);
+});
+
+Route::middleware('auth:sanctum')->get('/levels/{id}', function (Request $request, $id) {
+    return response()->json([
+        'level_number' => $request->user()->level_id,
+    ]);
+});
+
+Route::middleware('auth:sanctum', 'admin')->post('/add_level', [LevelController::class, 'addLevel']);
+
 
 
 
