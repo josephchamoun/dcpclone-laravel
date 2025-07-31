@@ -62,6 +62,6 @@ Route::middleware('auth:sanctum')->get('/levels/{id}', function (Request $reques
 
 Route::middleware('auth:sanctum', 'admin')->post('/add_level', [LevelController::class, 'addLevel']);
 
-
+Route::middleware('auth:sanctum', 'admin')->delete('/delete_level/{level_number}', [LevelController::class, 'deleteLevel']);
 
 

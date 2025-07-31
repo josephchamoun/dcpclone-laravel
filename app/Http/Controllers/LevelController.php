@@ -33,4 +33,17 @@ class LevelController extends Controller
 
         return response()->json($level, 201);
     }
+
+
+    public function deleteLevel($level_number)
+    {
+        $level = Level::where('level_number', $level_number)->first();
+        if (!$level) {
+            return response()->json(['message' => 'Level not found'], 404);
+        }
+
+        $level->delete();
+        return response()->json(['message' => 'Level deleted successfully']);
+    }
+
 }
