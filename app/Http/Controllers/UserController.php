@@ -20,14 +20,39 @@ class UserController extends Controller
     //referrals
 
 
-    function getUserReferrals($userId)
-    {
-        $user = User::find($userId);    
-        if (!$user) {
-            return response()->json(['error' => 'User not found'], 404);
-        }
-        $referrals = $user->referrals()->get()->makeHidden(['encrypted_private_key', 'email_verified_at', 'referred_by', 'created_at', 'updated_at', 'deposit_address', 'referred_by','balance', 'is_admin']);
+function getUserReferrals($userId)
+{
+    $user = User::find($userId);    
 
-        return response()->json($referrals);
+    if (!$user) {
+        return response()->json(['error' => 'User not found'], 404);
     }
+
+    $referrals = $user->referrals()
+        ->with('level') // eager load the level relation
+        ->get()
+        ->makeHidden([
+            'encrypted_private_key',
+            'email_verified_at',
+            'referred_by',
+            'created_at',
+            'updated_at',
+            'deposit_address',
+            'balance',
+            'is_admin',
+            'level_id' // hide raw level_id if you want
+        ])
+        ->map(function ($referral) {
+            return [
+                'id' => $referral->id,
+                'name' => $referral->name,
+                'email' => $referral->email,
+                'is_admin' => $referral->is_admin,
+                'level_number' => $referral->level->level_number ?? null,
+            ];
+        });
+
+    return response()->json($referrals);
+}
+
 }
