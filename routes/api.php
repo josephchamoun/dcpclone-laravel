@@ -9,6 +9,7 @@ use App\Http\Controllers\WalletController;
 use App\Http\Controllers\BalanceController;
 use App\Http\Middleware\IsAdmin;
 use App\Http\Controllers\UserController;
+use App\Models\Level;
 use App\Http\Controllers\LevelController;
 
 //hayde betjib l balance bi binance 
@@ -55,8 +56,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::middleware('auth:sanctum')->get('/levels/{id}', function (Request $request, $id) {
+    $user = auth()->user();
+    $level_id = $user->level_id;
+    $level_number = Level::where('id', $level_id)->value('level_number');
     return response()->json([
-        'level_number' => $request->user()->level_id,
+        'level_number' => $level_number
     ]);
 });
 
@@ -64,4 +68,4 @@ Route::middleware('auth:sanctum', 'admin')->post('/add_level', [LevelController:
 
 Route::middleware('auth:sanctum', 'admin')->delete('/delete_level/{level_number}', [LevelController::class, 'deleteLevel']);
 Route::middleware('auth:sanctum')->get('/user/{userId}/referrals',[UserController::class, 'getUserReferrals']);
-
+Route::middleware('auth:sanctum')->put('/update/level/{level_number}', [UserController::class, 'updateUserLevel']);

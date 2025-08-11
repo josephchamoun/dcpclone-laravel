@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Level;
 
 class UserController extends Controller
 {
@@ -53,6 +54,43 @@ function getUserReferrals($userId)
         });
 
     return response()->json($referrals);
+}
+
+
+
+
+public function updateUserLevel(Request $request, $level_number)
+{
+    $nextLevel = Level::where('level_number', $level_number)->first();
+
+    if (!$nextLevel) {
+        return response()->json(['message' => 'Next level not found'], 404);
+    }
+
+    $user = auth()->user();
+    $currentLevel = $user->level; // This is a Level model or null
+
+    // If user has no level, treat as level_number 0
+    $currentLevelNumber = $currentLevel ? $currentLevel->level_number : 0;
+
+    if ($nextLevel->level_number <= $currentLevelNumber) {
+        return response()->json(['message' => 'You are already at this level or higher'], 403);
+    }
+    if ($nextLevel->level_number - $currentLevelNumber > 1) {
+        return response()->json(['message' => 'You must unlock levels in order'], 403);
+    }
+
+    $userBalance = $user->balance;
+
+    if ($userBalance < $nextLevel->unlock_price) {
+        return response()->json(['message' => 'Insufficient balance to unlock this level'], 403);
+    }
+
+    $user->balance -= $nextLevel->unlock_price;
+    $user->level_id = $nextLevel->id;
+    $user->save();
+
+    return response()->json(['message' => 'Level updated successfully']);
 }
 
 }
