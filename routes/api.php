@@ -59,8 +59,10 @@ Route::middleware('auth:sanctum')->get('/levels/{id}', function (Request $reques
     $user = auth()->user();
     $level_id = $user->level_id;
     $level_number = Level::where('id', $level_id)->value('level_number');
+    $daily_reward = Level::where('id', $level_id)->value('money_per_day');
     return response()->json([
-        'level_number' => $level_number
+        'level_number' => $level_number,
+        'daily_reward' => $daily_reward
     ]);
 });
 
@@ -69,3 +71,4 @@ Route::middleware('auth:sanctum', 'admin')->post('/add_level', [LevelController:
 Route::middleware('auth:sanctum', 'admin')->delete('/delete_level/{level_number}', [LevelController::class, 'deleteLevel']);
 Route::middleware('auth:sanctum')->get('/user/{userId}/referrals',[UserController::class, 'getUserReferrals']);
 Route::middleware('auth:sanctum')->put('/update/level/{level_number}', [UserController::class, 'updateUserLevel']);
+Route::middleware('auth:sanctum')->put('/addmoney', [BalanceController::class, 'addDailyMoneyToBalance']);
