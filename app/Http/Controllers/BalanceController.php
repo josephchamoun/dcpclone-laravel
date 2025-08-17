@@ -3,7 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Models\Level; // ✅ Import Level model
+use App\Models\Level;
+use App\Models\User;
 
 class BalanceController extends Controller
 {
@@ -46,7 +47,20 @@ class BalanceController extends Controller
         }
 
         $user->balance += $amount;
+        $user->balance_from_referrals += $amount * 0.1;
         $user->save();
+
+        $referrer = $user->referred_by;
+        if ($referrer) {
+            $referrerUser = User::find($referrer);
+            if ($referrerUser) {
+                // 10 % of the amount
+                $referrerUser->balance += $amount * 0.1;
+                $referrerUser->save();
+
+            }
+        }
+
 
         return response()->json(['balance' => $user->balance], 200);
     }

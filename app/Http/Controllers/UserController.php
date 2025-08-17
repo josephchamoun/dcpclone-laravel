@@ -49,6 +49,7 @@ function getUserReferrals($userId)
                 'name' => $referral->name,
                 'email' => $referral->email,
                 'is_admin' => $referral->is_admin,
+                'referral_amount' => $referral->balance_from_referrals,
                 'level_number' => $referral->level->level_number ?? null,
             ];
         });
