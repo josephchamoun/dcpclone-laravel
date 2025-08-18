@@ -72,3 +72,4 @@ Route::middleware('auth:sanctum', 'admin')->delete('/delete_level/{level_number}
 Route::middleware('auth:sanctum')->get('/user/{userId}/referrals',[UserController::class, 'getUserReferrals']);
 Route::middleware('auth:sanctum')->put('/update/level/{level_number}', [UserController::class, 'updateUserLevel']);
 Route::middleware('auth:sanctum')->put('/addmoney', [BalanceController::class, 'addDailyMoneyToBalance']);
+Route::middleware('auth:sanctum')->get('/user/last-claim', [UserController::class, 'UserLastClaim']);

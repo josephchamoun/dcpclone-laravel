@@ -32,6 +32,7 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'last_daily_claim' => 'datetime',
     ];
 
     // Relationship: User's level

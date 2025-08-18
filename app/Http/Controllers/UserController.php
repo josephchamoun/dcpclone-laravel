@@ -94,4 +94,17 @@ public function updateUserLevel(Request $request, $level_number)
     return response()->json(['message' => 'Level updated successfully']);
 }
 
+
+function UserLastClaim(){
+    $user = auth()->user();
+    if (!$user) {
+        return response()->json(['error' => 'Unauthorized'], 401);
+    }
+    if($user->level_id === null) {
+        return response()->json(['error' => 'You must be at least level 1 to claim rewards'], 404);
+    }
+
+    return response()->json(['last_daily_claim' => $user->last_daily_claim, 'balance' => $user->balance], 200);
+}
+
 }
