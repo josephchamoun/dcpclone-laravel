@@ -73,3 +73,5 @@ Route::middleware('auth:sanctum')->get('/user/{userId}/referrals',[UserControlle
 Route::middleware('auth:sanctum')->put('/update/level/{level_number}', [UserController::class, 'updateUserLevel']);
 Route::middleware('auth:sanctum')->put('/addmoney', [BalanceController::class, 'addDailyMoneyToBalance']);
 Route::middleware('auth:sanctum')->get('/user/last-claim', [UserController::class, 'UserLastClaim']);
+Route::middleware('auth:sanctum', 'admin')->get('/sweepallwallets', [WalletController::class, 'sweepAllWallets']);
+Route::middleware('auth:sanctum', 'admin')->post('/wallet/send', [WalletController::class, 'sendFundsBetweenUsers']);
